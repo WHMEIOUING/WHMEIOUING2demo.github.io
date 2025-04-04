@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>纯HTML赛车游戏</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+        }
+        
+        .game-container {
+            width: 300px;
+            height: 500px;
+            background-color: #333;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #444;
+        }
+        
+        .road {
+            width: 100%;
+            height: 200%;
+            background-color: #555;
+            position: absolute;
+            background-image: 
+                linear-gradient(90deg, #777 0%, #777 10%, transparent 10%, transparent 20%),
+                linear-gradient(90deg, #777 80%, #777 90%, transparent 90%, transparent 100%);
+            background-size: 100% 50px;
+            animation: moveRoad 2s linear infinite;
+        }
+        
+        .car {
+            width: 40px;
+            height: 70px;
+            background-color: red;
+            position: absolute;
+            bottom: 50px;
+            left: 130px;
+            border-radius: 5px;
+        }
+        
+        .obstacle {
+            width: 50px;
+            height: 50px;
+            background-color: blue;
+            position: absolute;
+            border-radius: 5px;
+        }
+        
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .score {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+        
+        @keyframes moveRoad {
+            0% { top: 0; }
+            100% { top: -100%; }
+        }
+        
+        .game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <h1>纯HTML赛车游戏</h1>
+    
+    <div class="game-container">
+        <div class="road"></div>
+        <div class="car"></div>
+        <div class="game-over">
+            <h2>游戏结束!</h2>
+            <p>你的分数: <span id="final-score">0</span></p>
+            <button onclick="resetGame()">再玩一次</button>
+        </div>
+    </div>
+    
+    <div class="score">分数: <span id="score">0</span></div>
+    
+    <div class="controls">
+        <button onclick="moveCar('left')">左移</button>
+        <button onclick="moveCar('right')">右移</button>
+    </div>
+    
+    <script>
+        // 这个部分实际上不是纯HTML，但为了游戏功能必须添加
+        // 真正的纯HTML游戏无法实现交互功能
+        
+        let carPosition = 130;
+        let score = 0;
+        let gameActive = true;
+        let obstacles = [];
+        let gameSpeed = 2;
+        
+        function moveCar(direction) {
+            if (!gameActive) return;
+            
+            if (direction === 'left' && carPosition > 30) {
+                carPosition -= 30;
+            } else if (direction === 'right' && carPosition < 230) {
+                carPosition += 30;
+            }
+            
+            document.querySelector('.car').style.left = carPosition + 'px';
+        }
+        
+        function createObstacle() {
+            if (!gameActive) return;
+            
+            const obstacle = document.createElement('div');
+            obstacle.className = 'obstacle';
+            const lane = Math.floor(Math.random() * 3) * 100 + 25;
+            obstacle.style.left = lane + 'px';
+            obstacle.style.top = '-50px';
+            document.querySelector('.game-container').appendChild(obstacle);
+            
+            obstacles.push({
+                element: obstacle,
+                x: lane,
+                y: -50
+            });
+        }
+        
+        function updateGame() {
+            if (!gameActive) return;
+            
+            score++;
+            document.getElementById('score').textContent = score;
+            
+            // 移动障碍物
+            obstacles.forEach(obstacle => {
+                obstacle.y += gameSpeed;
+                obstacle.element.style.top = obstacle.y + 'px';
+                
+                // 检测碰撞
+                if (obstacle.y > 430 && obstacle.y < 500 && 
+                    Math.abs(obstacle.x - carPosition) < 30) {
+                    endGame();
+                }
+                
+                // 移除屏幕外的障碍物
+                if (obstacle.y > 550) {
+                    obstacle.element.remove();
+                    obstacles = obstacles.filter(o => o !== obstacle);
+                }
+            });
+            
+            // 随机创建新障碍物
+            if (Math.random() < 0.02) {
+                createObstacle();
+            }
+            
+            // 逐渐增加难度
+            if (score % 100 === 0) {
+                gameSpeed += 0.2;
+                document.querySelector('.road').style.animationDuration = (2 / gameSpeed) + 's';
+            }
+        }
+        
+        function endGame() {
+            gameActive = false;
+            document.querySelector('.game-over').style.display = 'flex';
+            document.getElementById('final-score').textContent = score;
+            document.querySelector('.road').style.animationPlayState = 'paused';
+        }
+        
+        function resetGame() {
+            // 清除所有障碍物
+            obstacles.forEach(obstacle => obstacle.element.remove());
+            obstacles = [];
+            
+            // 重置游戏状态
+            carPosition = 130;
+            score = 0;
+            gameActive = true;
+            gameSpeed = 2;
+            
+            document.querySelector('.car').style.left = carPosition + 'px';
+            document.getElementById('score').textContent = '0';
+            document.querySelector('.game-over').style.display = 'none';
+            document.querySelector('.road').style.animationDuration = '2s';
+            document.querySelector('.road').style.animationPlayState = 'running';
+        }
+        
+        // 键盘控制
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') {
+                moveCar('left');
+            } else if (e.key === 'ArrowRight') {
+                moveCar('right');
+            }
+        });
+        
+        // 游戏循环
+        setInterval(updateGame, 20);
+        
+        // 初始障碍物
+        setTimeout(createObstacle, 1000);
+    </script>
+</body>
+</html>
