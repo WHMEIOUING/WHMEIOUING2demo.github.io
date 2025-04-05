@@ -1,0 +1,17 @@
+WHMEIOUINGDevProMAX.github.io/
+├── _layouts/          # 新增
+│   └── default.html   # 主布局文件
+├── _includes/         # 新增
+│   ├── navbar.html    # 导航栏
+│   ├── footer.html    # 页脚
+│   └── sidebar.html   # 侧边栏
+├── assets/            # 新增
+│   ├── css/           # CSS样式
+│   │   └── docusaurus.css
+│   └── js/            # JavaScript
+│       └── docusaurus.js
+├── docs/              # 使用现有的"文档"目录
+│   └── intro.md       # 文档首页
+├── blog/              # 新增博客目录
+│   └── first-post.md  # 示例博客文章
+└── index.md           # 首页内容
