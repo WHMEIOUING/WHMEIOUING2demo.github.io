@@ -1,6 +1,36 @@
 {
-    "title":"WHMEIOUING",
-    "subTitle":"博客尝试构建2",
-    "avatarUrl":"https://avatars.githubusercontent.com/u/139449438?v=4",
-    "GMEEK_VERSION":"last"
+  "title": "WHMEIOUING",
+  "tagline": "deepseek辅助修改版本V1.2.36",
+  "url": "https://whmeiouing.github.io",
+  "baseUrl": "/WHMEIOUINGDevProMAX.github.io/",
+  "organizationName": "WHMEIOUING",
+  "projectName": "WHMEIOUINGDevProMAX.github.io",
+  "theme": {
+    "primaryColor": "#2e8555",
+    "secondaryColor": "#205d3b"
+  },
+  "navbar": {
+    "title": "我的博客",
+    "logo": {
+      "alt": "Logo",
+      "src": "assets/logo.svg"
+    },
+    "items": [
+      {
+        "to": "/",
+        "label": "首页",
+        "position": "left"
+      },
+      {
+        "to": "/blog",
+        "label": "博客",
+        "position": "left"
+      },
+      {
+        "to": "/docs",
+        "label": "文档",
+        "position": "left"
+      }
+    ]
+  }
 }
